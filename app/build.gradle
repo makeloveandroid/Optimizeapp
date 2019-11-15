@@ -1,0 +1,149 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+apply plugin: 'QOptimize'
+
+
+QOptimizeConfig {
+    /**
+     * 总开关
+     */
+    enable true
+
+    /**
+     * debug 下是否可用，default true
+     */
+    enableWhenDebug true
+
+    /**
+     * 资源去重复配置
+     */
+    ClearRepeatResourcesConfig {
+        enable true
+        ignoreFileName = ['111', '222', '333']
+    }
+
+    /**
+     * 图片压缩优化配置
+     */
+    OptimizeImgConfig {
+        enable true
+
+
+        //优化类型，可选"ConvertWebp"，"Compress"，转换为webp或原图压缩，默认Compress，使用ConvertWep需要min sdk >= 18.但是压缩效果更好
+        optimizeType "Compress"
+
+        //是否支持带有透明度的webp，default false,带有透明图的图片会进行压缩
+        supportAlphaWebp true
+
+        ignoreFileName = ['222', '333', '444']
+    }
+
+
+    /**
+     * 资源混淆配置
+     */
+    ProguardResourcesConfig {
+        enable true
+        ignoreFileName = ['55', '666', '777']
+    }
+}
+
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.1"
+    defaultConfig {
+        applicationId "com.qihoo.kimg"
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.core:core-ktx:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'com.google.android.material:material:1.0.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation 'com.nightonke:boommenu:2.0.3'
+    implementation project(path: ':test')
+
+}
+
+//
+//project.afterEvaluate {
+//    def tasks = ['preDebugBuild',
+//                 'compileDebugAidl',
+//                 'compileDebugRenderscript',
+//                 'checkDebugManifest',
+//                 'generateDebugBuildConfig',
+//                 'prepareLintJar',
+//                 'generateDebugResValues',
+//                 'generateDebugResources',
+//                 'mergeDebugResources',
+//                 'createDebugCompatibleScreenManifests',
+//                 'processDebugManifest',
+//                 'splitsDiscoveryTaskDebug',
+//                 'processDebugResources',
+//                 'generateDebugSources',
+//                 'javaPreCompileDebug',
+//                 'compileDebugJavaWithJavac',
+//                 'compileDebugNdk',
+//                 'compileDebugSources',
+//                 'mergeDebugShaders',
+//                 'compileDebugShaders',
+//                 'generateDebugAssets',
+//                 'mergeDebugAssets',
+//                 'transformClassesWithDexBuilderForDebug',
+//                 'transformDexArchiveWithExternalLibsDexMergerForDebug',
+//                 'transformDexArchiveWithDexMergerForDebug',
+//                 'mergeDebugJniLibFolders',
+//                 'transformNativeLibsWithMergeJniLibsForDebug',
+//                 'processDebugJavaRes',
+//                 'transformResourcesWithMergeJavaResForDebug',
+//                 'validateSigningDebug',
+//                 'packageDebug',
+//                 'assembleDebug'
+//    ]
+//    for (String taskName : tasks) {
+//        printTaskInputsOutputs(taskName)
+//    }
+//}
+//
+//def printTaskInputsOutputs(String taskName) {
+//    def realTask = project.tasks.findByName(taskName)
+//
+//    if (realTask) {
+//        println 'find ' + taskName + ' task -----------------------'
+//
+//        realTask.doLast {
+//            realTask.inputs.files.each { fileTemp ->
+//                println 'input file:' + fileTemp.absolutePath
+//            }
+//
+//            println '---------------------------------------------------'
+//            realTask.outputs.files.each { fileTemp ->
+//                println 'output file:' + fileTemp.absolutePath
+//            }
+//        }
+//    }
+//}
+
