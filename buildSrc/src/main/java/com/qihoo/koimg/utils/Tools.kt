@@ -1,7 +1,6 @@
 package com.qihoo.koimg.utils
 
-import java.io.BufferedReader
-import java.io.InputStreamReader
+import java.io.*
 
 /**
  * Created by longlong on 2017/4/15.
@@ -46,8 +45,33 @@ class Tools {
             return system.startsWith("Windows")
         }
 
+
+        fun getOsName(): String? {
+            val system = System.getProperty("os.name")
+            return when (system) {
+                "Mac OS X" ->
+                    "mac"
+                "Linux" ->
+                    "linux"
+                "Windows" ->
+                    "windows"
+                else -> null
+            }
+        }
+
         fun chmod() {
             outputMessage("chmod 755 -R ${FileUtil.getRootDirPath()}")
+        }
+
+        fun chmod755(file: File) {
+            if (file.isFile) {
+                outputMessage("chmod 755 -R ${file.absolutePath}")
+            } else {
+                outputMessage("chmod 755 -R ${file.absolutePath}")
+                file.listFiles().forEach {
+                    chmod755(it)
+                }
+            }
         }
 
         private fun outputMessage(cmd: String) {
@@ -75,5 +99,15 @@ class Tools {
                 null
             }
         }
+
+        @Throws(IOException::class, InterruptedException::class)
+        fun macSudo(pass: String, cmd: String) {
+            val process = Runtime.getRuntime().exec(arrayOf("/bin/bash", "-c", "echo \"$pass\" | sudo -S $cmd"))
+//            val ir = InputStreamReader(process.inputStream)
+            process.waitFor()
+
+        }
     }
+
+
 }

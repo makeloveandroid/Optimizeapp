@@ -47,6 +47,8 @@ class QOptimizePlugin : Plugin<Project> {
 
             // 2. 记录 root 路径
             FileUtil.setRootDir(project.rootDir.path)
+
+
             // 3. 得到配置
             val config = project.extensions.findByName(CONFIG_NAME) as QOptimizeConfig
             val clearRepeatConfig =

@@ -53,6 +53,7 @@ fun start(
     // 解压ZIP
     val unZipDir = "${apFile.parent}${File.separator}$DIR_NAME"
 
+
     ZipFile(apFile).unZipFiles(unZipDir)
 
     if (clearRepeatConfig.enable) {
@@ -71,7 +72,7 @@ fun start(
          */
 
         // TODO 考虑从网上下载插件
-        initTools()
+        initTools(optimizeImgConfig)
 
         // 优化图片
         val mappingFile = File(mappingDir, OPTIMIZE_IMG_MAPPING)

@@ -27,6 +27,8 @@ open class OptimizeImgConfig : Named, BaseConfig() {
     var optimizeType = OPTIMIZE_COMPRESS_PICTURE
 
 
+    var pass = ""
+
     override fun getName(): String {
         return CLEAR_REPEAT_RESOURCES_CONFIG_NAME
     }

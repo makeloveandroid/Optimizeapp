@@ -9,7 +9,7 @@ fun FileWriter.synchronizedWriteString(string: String) {
 }
 
 object FileUtil {
-    const val PATH_NAME = "KoReTools"
+    const val PATH_NAME = "QTools"
 
     private lateinit var rootDir: String
 

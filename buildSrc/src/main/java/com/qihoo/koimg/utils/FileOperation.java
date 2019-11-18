@@ -184,36 +184,6 @@ public class FileOperation {
     return compress;
   }
 
-  /**
-   * zip list of file
-   *
-   * @param resFileList file(dir) list
-   * @param baseFolder file(dir) base folder, we should calc relative path of resFile with base
-   * @param zipFile output zip file
-   * @param compressData compress data
-   */
-  public static void zipFiles(
-      Collection<File> resFileList, File baseFolder, File zipFile, HashMap<String, Integer> compressData)
-      throws IOException {
-    ZipOutputStream zipOut = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile), BUFFER));
-    for (File resFile : resFileList) {
-      if (resFile.exists()) {
-        if (resFile.getAbsolutePath().contains(baseFolder.getAbsolutePath())) {
-          String relativePath = baseFolder.toURI().relativize(resFile.getParentFile().toURI()).getPath();
-          // remove slash at end of relativePath
-          if (relativePath.length() > 1) {
-            relativePath = relativePath.substring(0, relativePath.length() - 1);
-          } else {
-            relativePath = "";
-          }
-          zipFile(resFile, zipOut, relativePath, compressData);
-        } else {
-          zipFile(resFile, zipOut, "", compressData);
-        }
-      }
-    }
-    zipOut.close();
-  }
 
   private static void zipFile(
       File resFile, ZipOutputStream zipout, String rootpath, HashMap<String, Integer> compressData) throws IOException {

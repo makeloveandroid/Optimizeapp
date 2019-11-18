@@ -1,16 +1,19 @@
 package com.qihoo.koimg.action
 
+import com.android.utils.FileUtils
 import com.qihoo.koimg.RESOURCES_NAME
 import com.qihoo.koimg.config.OptimizeImgConfig
 import com.qihoo.koimg.config.OptimizeImgConfig.Companion.OPTIMIZE_COMPRESS_PICTURE
 import com.qihoo.koimg.config.OptimizeImgConfig.Companion.OPTIMIZE_WEBP_CONVERT
 import com.qihoo.koimg.extension.setString
+import com.qihoo.koimg.extension.unZipFiles
 import com.qihoo.koimg.utils.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.apache.tools.ant.taskdefs.Execute.launch
+import org.gradle.api.GradleException
 import pink.madis.apk.arsc.ResourceFile
 import pink.madis.apk.arsc.ResourceTableChunk
 import java.io.File
@@ -18,6 +21,7 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.FileWriter
 import java.util.concurrent.CopyOnWriteArrayList
+import java.util.zip.ZipFile
 import javax.annotation.meta.When
 
 object OptimizeImgAction {
@@ -115,7 +119,7 @@ object OptimizeImgAction {
                 .forEach {
                     // 进行图片压缩
                     launch(Dispatchers.Default) {
-//                        if (config.checkPixels && ImageUtil.isBigSizeImage(it, config.maxSize)) {
+                        //                        if (config.checkPixels && ImageUtil.isBigSizeImage(it, config.maxSize)) {
 //                            // 检测是否是大图
 //                        }
                         when (config.optimizeType) {
@@ -152,10 +156,63 @@ object OptimizeImgAction {
     }
 
 
-    fun initTools() {
+    fun initTools(config: OptimizeImgConfig) {
         if (Tools.isLinux()) {
             Tools.chmod()
         }
+        // 判断图片压缩文件是否存在
+
+        val osName = Tools.getOsName() ?: throw GradleException("操作系统未知!")
+
+        val tools = File("${FileUtil.getToolsDirPath()}/$osName")
+        tools.mkdirs()
+        val toolsFile = File(tools, "$osName.zip")
+
+        // copy 工具 zip文件
+        if (!toolsFile.exists()) {
+            val stream = FileUtil::class.java.getResourceAsStream("/tools/$osName.zip")
+            println("拷贝文件:${toolsFile.absolutePath}")
+            stream.use {
+                toolsFile.writeBytes(it.readBytes())
+            }
+        }
+
+
+        if (Tools.isMac()) {
+            // 检测文件是否存在
+            val toolsName = arrayOf("cwebp", "guetzli", "pngquant")
+            val all = toolsName.all {
+                File("${toolsFile.parentFile}${File.separator}$it").exists()
+            }
+            if (!all) {
+                ZipFile(toolsFile).unZipFiles(toolsFile.parent)
+                toolsName.forEach {
+                    val cmd = "chmod -R 755 ${toolsFile.parentFile}${File.separator}$it"
+                    Tools.macSudo(config.pass, cmd)
+                }
+            }
+        } else if (Tools.isLinux()) {
+            val toolsName = arrayOf("cwebp", "guetzli", "pngquant")
+            val all = toolsName.all {
+                File("${toolsFile.parentFile}${File.separator}$it").exists()
+            }
+            if (!all) {
+                ZipFile(toolsFile).unZipFiles(toolsFile.parent)
+                // 修改文件权限
+                Tools.chmod755(toolsFile.parentFile)
+            }
+
+        } else {
+            val toolsName = arrayOf("cwebp.exe", "guetzli.exe", "pngquant.exe")
+            val all = toolsName.all {
+                File("${toolsFile.parentFile}${File.separator}$it").exists()
+            }
+            if (!all) {
+                ZipFile(toolsFile).unZipFiles(toolsFile.parent)
+            }
+        }
+
+
     }
 
 }

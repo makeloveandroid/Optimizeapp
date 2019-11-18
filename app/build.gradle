@@ -39,6 +39,11 @@ QOptimizeConfig {
         //是否支持带有透明度的webp，default false,带有透明图的图片会进行压缩
         supportAlphaWebp true
 
+
+        // mac 或 Linux 请配置开机密码,如果不想暴露密码请下载 QTools,并解压到根目录
+        pass "200808"
+
+
         ignoreFileName = ['222', '333', '444']
     }
 
