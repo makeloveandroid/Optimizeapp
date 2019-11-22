@@ -13,6 +13,7 @@ import com.qihoo.koimg.utils.WebpUtils
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.internal.tasks.compile.JavaCompilerArgumentsBuilder.LOGGER
 import java.io.File
 import kotlin.system.measureTimeMillis
 
@@ -114,6 +115,7 @@ class QOptimizePlugin : Plugin<Project> {
                                             proguardResourcesConfig
                                         )
                                     }
+                                    LOGGER.debug("优化开始了啊!!!")
                                     println("完成优化,运行时间:$time")
                                 }
                         }

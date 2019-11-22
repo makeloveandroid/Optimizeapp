@@ -165,50 +165,26 @@ object OptimizeImgAction {
         val osName = Tools.getOsName() ?: throw GradleException("操作系统未知!")
 
         val tools = File("${FileUtil.getToolsDirPath()}/$osName")
-        tools.mkdirs()
-        val toolsFile = File(tools, "$osName.zip")
-
-        // copy 工具 zip文件
-        if (!toolsFile.exists()) {
-            val stream = FileUtil::class.java.getResourceAsStream("/tools/$osName.zip")
-            println("拷贝文件:${toolsFile.absolutePath}")
-            stream.use {
-                toolsFile.writeBytes(it.readBytes())
-            }
+        if (!tools.exists()) {
+            throw GradleException("请将 QTools 目录拷贝到 ${FileUtil.getRootDirPath()} 下")
         }
 
-
-        if (Tools.isMac()) {
+        if (Tools.isMac() || Tools.isLinux()) {
             // 检测文件是否存在
             val toolsName = arrayOf("cwebp", "guetzli", "pngquant")
             val all = toolsName.all {
-                File("${toolsFile.parentFile}${File.separator}$it").exists()
+                File("$tools${File.separator}$it").exists()
             }
             if (!all) {
-                ZipFile(toolsFile).unZipFiles(toolsFile.parent)
-                toolsName.forEach {
-                    val cmd = "chmod -R 755 ${toolsFile.parentFile}${File.separator}$it"
-                    Tools.macSudo(config.pass, cmd)
-                }
+                throw GradleException("请将 QTools 目录拷贝到 ${FileUtil.getRootDirPath()} 下")
             }
-        } else if (Tools.isLinux()) {
-            val toolsName = arrayOf("cwebp", "guetzli", "pngquant")
-            val all = toolsName.all {
-                File("${toolsFile.parentFile}${File.separator}$it").exists()
-            }
-            if (!all) {
-                ZipFile(toolsFile).unZipFiles(toolsFile.parent)
-                // 修改文件权限
-                Tools.chmod755(toolsFile.parentFile)
-            }
-
-        } else {
+        } else if (Tools.isWindows()) {
             val toolsName = arrayOf("cwebp.exe", "guetzli.exe", "pngquant.exe")
             val all = toolsName.all {
-                File("${toolsFile.parentFile}${File.separator}$it").exists()
+                File("${tools.parentFile}${File.separator}$it").exists()
             }
             if (!all) {
-                ZipFile(toolsFile).unZipFiles(toolsFile.parent)
+                throw GradleException("请将 QTools 目录拷贝到 ${FileUtil.getRootDirPath()} 下")
             }
         }
 

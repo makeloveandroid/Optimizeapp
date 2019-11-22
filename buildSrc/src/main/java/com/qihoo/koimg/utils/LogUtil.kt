@@ -3,6 +3,7 @@ package com.qihoo.koimg.utils
 import java.lang.Exception
 
 fun log(msg:String) = println(msg)
+//fun log(msg:String) = {}
 
 class LogUtil {
 
