@@ -3,7 +3,7 @@
 
 [git地址](https://github.com/makeloveandroid/Optimizeapp)  
 
-[博客地址](https://wenyingzhi.com/mu-lu-5/feng-mian)
+[博客地址](https://www.wenyingzhi.com/mu-lu-6/feng-mian)
 
 ## 功能&特色
 
